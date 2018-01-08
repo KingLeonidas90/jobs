@@ -1,10 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { TabNavigator, StackNavigator} from 'react-navigation';
+import { StyleSheet, Text, View, Alert } from 'react-native';
+import { TabNavigator, StackNavigator } from 'react-navigation';
 // Das Provider tag ist eine RN Komponente, die den Redux Store als Prop akzep.
 import { Provider } from 'react-redux';
-
-import store from './store'
+import { Permissions, Notifications } from 'expo'
+import { PersistGate } from 'redux-persist/es/integration/react';
+import configureStore from './store';
+import registerForNotifications from './services/push_notifications';
+// import store from './store'
 import AuthScreen from './screens/AuthScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import MapScreen from './screens/MapScreen';
@@ -13,7 +16,31 @@ import ReviewScreen from './screens/ReviewScreen';
 import SettingsScreen from './screens/SettingsScreen';
 
 export default class App extends React.Component {
+  componentDidMount() {
+    // Rufe die push_notifications funktion auf und überprüfe ob der nutzer
+    // bereits zugestimmt hat
+    registerForNotifications();
+    // DIese Callback Funktion wird immer ausgelöst, sobald der user eine Notification
+    // erhält
+    Notifications.addListener((notification) => {
+      const { data: { text }, origin } = notification;
+
+      if (origin === 'received' && text) {
+      // ist das selbe wie : const text = notification.data.text
+      Alert.alert(
+        // title
+        'New Push Notification',
+        // das text property kommt von dem notification objekt
+        text,
+        [{ text: 'Ok.' }]
+
+      );
+        }
+    });
+  }
+
   render() {
+    const { persistor, store } = configureStore();
     // wir erstellen einen neuen TabNavigator durch die jeweilige Konfiguration
     // die übergeben wird
     const MainNavigator = TabNavigator({
@@ -34,7 +61,10 @@ export default class App extends React.Component {
       }, {
         tabBarPosition: 'bottom',
         tabBarOptions: {
-          labelStyle: { fontSize: 12 }
+          labelStyle: { fontSize: 12 },
+          showIcon: true,
+          iconStyle: { width: 30 }
+
         }
       })
       }
@@ -58,10 +88,12 @@ export default class App extends React.Component {
 
     return (
       <Provider store={store}>
+         <PersistGate persistor={persistor}>
         {/* Eventuell geht so die leere stelle der unsichtbaren tabbar weg */}
         {/* <View style={styles.container}> */}
           <MainNavigator />
         {/* </View> */}
+      </PersistGate>
       </Provider>
     );
   }

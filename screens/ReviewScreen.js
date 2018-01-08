@@ -25,7 +25,7 @@ class ReviewScreen extends Component {
              color='rgba(0,122,255,1)'
            />
          ),
-         style: {
+         headerStyle: {
            marginTop: Platform.OS === 'android' ? 24 : 0
          }
        };
@@ -40,7 +40,7 @@ class ReviewScreen extends Component {
          latitudeDelta: 0.02
        };
        return (
-         <Card  title={jobtitle}>
+         <Card title={jobtitle} key={jobkey}>
            <View style={{ height: 200 }}>
              <MapView
                style={{ flex: 1 }}
