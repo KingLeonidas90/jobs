@@ -2,11 +2,17 @@ import React, { Component } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { MapView } from 'expo';
 import { connect } from 'react-redux';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 
 import * as actions from '../actions';
 
 class MapScreen extends Component {
+  static navigationOptions = {
+    title: 'Map',
+    tabBarIcon: ({ tintColor }) => {
+  return <Icon name="my-location" size={30} color={tintColor} />;
+}
+  }
   // instance level state
   state = {
     mapLoaded: false,
@@ -27,7 +33,10 @@ class MapScreen extends Component {
   }
 
   onButtonPress = () => {
-    this.props.fetchJobs(this.state.region);
+    // als 2tes argument wird eine callback funktion übergeben
+    this.props.fetchJobs(this.state.region, () => {
+      this.props.navigation.navigate('deck');
+    });
   }
   render() {
     // Wenn maploaded auf false ist, wird der spinner gezeigt, ansonsten die karte

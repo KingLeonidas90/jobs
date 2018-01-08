@@ -31,16 +31,29 @@ export default class App extends React.Component {
             })
           }
 
-      }) }
+      }, {
+        tabBarPosition: 'bottom',
+        tabBarOptions: {
+          labelStyle: { fontSize: 12 }
+        }
+      })
+      }
     }, {
       navigationOptions: {
         tabBarVisible: false
       },
+      // durch false kann man nicht mehr durchs swipen durch die jeweiligen Tabs switchen
       swipeEnabled: false,
       // Each screen will not mount/load until user clicks on them
     lazy: true,
     animationEnabled: false,
     tabBarPosition: 'bottom',
+    // // tabBarOptions: {
+    // //   showIcon: true,
+    // //         iconStyle: {
+    // //           width: 30,
+    // //           height: 30 }
+    // }
     });
 
     return (
